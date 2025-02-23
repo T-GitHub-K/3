@@ -1,0 +1,3 @@
+[submodule "tetris"]
+	path = tetris
+	url = git@github.com:Coding-Ocean/tetris.git
