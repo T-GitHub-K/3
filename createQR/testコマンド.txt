@@ -1,0 +1,5 @@
+python ./createQR.py --folder "\\Fleet016\TAXCON\T_東京\M_ムサシ交通\監査資料\日常点検表" --filename "日常点検表_20260616_123456_12345678_河　村　武　男.pdf" -o test.png
+
+createQR.exe --folder "\\Fleet016\TAXCON\T_東京\M_ムサシ交通\監査資料\日常点検表" --filename "日常点検表_20260616_123456_12345678_河　村　武　男.pdf" -o testexe.png
+
+
