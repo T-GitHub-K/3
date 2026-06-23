@@ -2,8 +2,8 @@
 
 VSVersionInfo(
   ffi=FixedFileInfo(
-    filevers=(1,0,0,0),
-    prodvers=(1,0,0,0),
+    filevers=(2,0,0,0),
+    prodvers=(2,0,0,0),
     mask=0x3f,
     flags=0x0,
     OS=0x40004,
@@ -30,12 +30,12 @@ VSVersionInfo(
 
             StringStruct(
               'FileDescription',
-              'ScanQR - QRコード自動仕分けツール'
+              'ScanQR - QRコード自動仕分けツール P'
             ),
 
             StringStruct(
               'FileVersion',
-              '1.0.0.0'
+              '2.0.0.0'
             ),
 
             StringStruct(
@@ -60,7 +60,7 @@ VSVersionInfo(
 
             StringStruct(
               'ProductVersion',
-              '1.0.0.0'
+              '2.0.0.0'
             )
 
           ]
