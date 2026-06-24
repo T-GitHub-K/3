@@ -222,16 +222,7 @@ def main():
 
     )
 
-    parser.add_argument(
-
-        "--folder",
-
-        required=True,
-
-        help="フォルダ"
-
-    )
-
+    
     parser.add_argument(
 
         "--filename",
@@ -283,7 +274,6 @@ def main():
     args = parser.parse_args()
 
     text = (
-        f"folder={args.folder}\n"
         f"filename={args.filename}"
     )
 
