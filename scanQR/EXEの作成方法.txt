@@ -1,8 +1,10 @@
 python -m PyInstaller --onefile --noconsole scanQR.py
 
-
+通常版
 python -m PyInstaller --onefile --windowed --icon=scanQR.ico --version-file=version_info.txt scanQR.py
-python -m PyInstaller --onefile --windowed --version-file=version_info.txt scanQR.py
+
+サイズ最小 
+python -m PyInstaller --clean --noconfirm --onedir --windowed --optimize 2 --icon scanQR.ico --version-file=version_info.txt scanQR.py
 
 オプションの解説
 
