@@ -314,4 +314,8 @@ scanQR.py
 ■変更履歴
 Ver1.0.0.0　2026/06/16　Kawamura　初版
 Ver2.0.0.0　2026/06/23　Kawamura　コマンドライン対応版
+Ver2.1.0.0　2026/06/27　Kawamura　読取精度改良版
+　　普通のPDF → 200dpiで即終了（速い）
+　　小さいQR → 300dpi＋2倍で救済
+　　難しいPDF → 400dpiへ昇格
 

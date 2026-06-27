@@ -257,102 +257,124 @@ with open(PID_FILE, "w") as f:
 
 
 # ---------------------
-# QR読取（全ページ対応）
+# QR読取（全ページ対応・位置自由）
 # ---------------------
 
 def read_qr(pdf):
 
     detector = cv2.QRCodeDetector()
 
-    doc = None
-
     try:
 
-        doc = fitz.open(pdf)
+        with fitz.open(pdf) as doc:
 
-        for page_no in range(len(doc)):
+            for page_no in range(len(doc)):
 
-            try:
+                # 軽い→重い順
+                for dpi, scales in [
 
-                page = doc[page_no]
+                    (200, [1]),
 
-                pix = page.get_pixmap(
-                    matrix=fitz.Matrix(
-                        2,
-                        2
+                    (300, [1, 2]),
+
+                    (400, [1])
+
+                ]:
+
+                    page = doc[page_no]
+
+                    pix = page.get_pixmap(
+                        dpi=dpi
                     )
-                )
 
-                img = np.frombuffer(
-                    pix.samples,
-                    dtype=np.uint8
-                ).reshape(
-                    pix.height,
-                    pix.width,
-                    pix.n
-                )
+                    img = np.frombuffer(
+                        pix.samples,
+                        dtype=np.uint8
+                    ).reshape(
+                        pix.height,
+                        pix.width,
+                        pix.n
+                    )
 
-                if pix.n == 4:
+                    if pix.n == 4:
 
-                    img = cv2.cvtColor(
+                        img = cv2.cvtColor(
+                            img,
+                            cv2.COLOR_RGBA2BGR
+                        )
+
+                    gray = cv2.cvtColor(
                         img,
-                        cv2.COLOR_RGBA2BGR
+                        cv2.COLOR_BGR2GRAY
                     )
 
-                gray = cv2.cvtColor(
-                    img,
-                    cv2.COLOR_BGR2GRAY
-                )
+                    for scale in scales:
 
-                qr, _, _ = detector.detectAndDecode(
-                    gray
-                )
+                        test = gray
 
-                if qr:
+                        if scale > 1:
 
-                    print(
-                        f"QR検出 "
-                        f"{os.path.basename(pdf)} "
-                        f"page={page_no+1}"
-                    )
+                            test = cv2.resize(
+                                gray,
+                                None,
+                                fx=scale,
+                                fy=scale,
+                                interpolation=cv2.INTER_CUBIC
+                            )
 
-                    return qr
+                        try:
 
-            except Exception as e:
+                            qr, _, _ = (
+                                detector
+                                .detectAndDecode(
+                                    test
+                                )
+                            )
 
-                print(
-                    "ページ読取失敗:",
-                    e
-                )
+                            if qr:
+
+                                print(
+                                    f"QR検出 "
+                                    f"page={page_no+1} "
+                                    f"dpi={dpi} "
+                                    f"x{scale}"
+                                )
+
+                                return qr
+
+                        except:
+                            pass
 
     except Exception as e:
 
         print(
-            "PDF読込失敗:",
+            "QR読取失敗:",
             e
         )
 
-    finally:
-
-        if doc:
-            doc.close()
-
     return None
 
+# ---------------------
+# 再試行
+# ---------------------
 
 def retry_qr(path):
 
-    for i in range(5):
+    for i in range(2):
 
         qr = read_qr(path)
 
         if qr:
+
             return qr
 
-        time.sleep(2)
+        print(
+            f"再試行 {i+1}/5"
+        )
+
+        time.sleep(0.3)
 
     return None
-
 
 def parse_qr(text):
 
