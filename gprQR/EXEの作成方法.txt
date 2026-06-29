@@ -1,0 +1,63 @@
+python -m PyInstaller --onefile --noconsole gprQR.py
+
+通常版
+python -m PyInstaller --onefile --windowed --icon=gprQR.ico --version-file=version_info.txt gprQR.py
+
+サイズ最小 
+python -m PyInstaller --clean --noconfirm --onedir --windowed --optimize 2 --icon gprQR.ico --version-file=version_info.txt gprQR.py
+
+オプションの解説
+
+    --onefile (-F): 関連ファイルを1つのEXEにまとめます。
+
+    --windowed (-w): タスクトレイ（pystray）をメインとするアプリの場合、不要な黒いコンソール画面を非表示にします。
+
+    --icon=app.ico (-i): EXEファイル自体のアイコン画像を独自のものに変更します（※事前に .ico 形式の画像を用意してください）。
+
+    --version-file=version_info.txt (-v): 今回作成したバージョン情報を埋め込みます。
+
+3. 設定が反映されたか確認する
+
+ビルドが完了すると、dist フォルダ内にEXEファイルが生成されます。
+
+    生成されたEXEファイルを右クリックします。
+
+    「プロパティ」を開きます。
+
+    「詳細」タブを選択します。
+
+これにより、指定した「製品名」「著作権」「会社名」などがWindowsのプロパティ画面に正しく表示されていることが確認できます。
+
+
+■version_info.txt
+
+💡 各項目の書き換えポイント
+
+    filevers / prodvers: Windowsのシステムが認識するためのバージョン番号です。必ず 4つの数字をカンマ区切り で記述してください。
+
+    CompanyName: 会社名や制作者名を指定します。
+
+    FileDescription: エクスプローラーでファイルにマウスを当てたときや、詳細一覧で「ファイルの説明」欄に表示される説明文です。
+
+    LegalCopyright: 著作権表記です。
+
+    ProductName: アプリケーション全体の製品名です。
+
+
+
+    icon
+BMPファイルをicoファイルに変換
+toolDL
+winget install ImageMagick.ImageMagick
+
+変換
+magick gprQR.bmp -define icon:auto-resize=256,128,64,48,32,16 gprQR.ico
+
+検査
+Format-Hex .\gpQR.ico -Count 16
+
+判定基準：
+正常な ICO：00 00 01 00
+PNGだった場合：89 50 4E 47
+JPEGだった場合：FF D8 FF
+BMP：42 4D
