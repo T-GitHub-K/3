@@ -270,80 +270,84 @@ def read_qr(pdf):
 
             for page_no in range(len(doc)):
 
-                # 軽い→重い順
-                for dpi, scales in [
+                page = doc[page_no]
 
-                    (200, [1]),
+                # 軽量→重い順
+                plans = [
 
-                    (300, [1, 2]),
+                    (200, False, 1),
+                    (300, False, 1),
 
-                    (400, [1])
+                    # 失敗時だけ追加
+                    (300, True, 2),
+                    (400, True, 2),
+                ]
 
-                ]:
+                for dpi, binary, scale in plans:
 
-                    page = doc[page_no]
+                    try:
 
-                    pix = page.get_pixmap(
-                        dpi=dpi
-                    )
-
-                    img = np.frombuffer(
-                        pix.samples,
-                        dtype=np.uint8
-                    ).reshape(
-                        pix.height,
-                        pix.width,
-                        pix.n
-                    )
-
-                    if pix.n == 4:
-
-                        img = cv2.cvtColor(
-                            img,
-                            cv2.COLOR_RGBA2BGR
+                        pix = page.get_pixmap(
+                            dpi=dpi,
+                            colorspace=fitz.csGRAY,
+                            alpha=False
                         )
 
-                    gray = cv2.cvtColor(
-                        img,
-                        cv2.COLOR_BGR2GRAY
-                    )
+                        img = np.frombuffer(
+                            pix.samples,
+                            dtype=np.uint8
+                        ).reshape(
+                            pix.height,
+                            pix.width
+                        )
 
-                    for scale in scales:
+                    except:
+                        continue
 
-                        test = gray
 
-                        if scale > 1:
+                    if binary:
 
-                            test = cv2.resize(
-                                gray,
-                                None,
-                                fx=scale,
-                                fy=scale,
-                                interpolation=cv2.INTER_CUBIC
+                        img = cv2.threshold(
+                            img,
+                            0,
+                            255,
+                            cv2.THRESH_BINARY
+                            +
+                            cv2.THRESH_OTSU
+                        )[1]
+
+
+                    if scale > 1:
+
+                        img = cv2.resize(
+                            img,
+                            None,
+                            fx=scale,
+                            fy=scale,
+                            interpolation=cv2.INTER_LINEAR
+                        )
+
+
+                    try:
+
+                        qr, _, _ = (
+                            detector.detectAndDecode(
+                                img
+                            )
+                        )
+
+                        if qr:
+
+                            print(
+                                f"QR検出 "
+                                f"page={page_no+1} "
+                                f"dpi={dpi}"
                             )
 
-                        try:
+                            return qr
 
-                            qr, _, _ = (
-                                detector
-                                .detectAndDecode(
-                                    test
-                                )
-                            )
-
-                            if qr:
-
-                                print(
-                                    f"QR検出 "
-                                    f"page={page_no+1} "
-                                    f"dpi={dpi} "
-                                    f"x{scale}"
-                                )
-
-                                return qr
-
-                        except:
-                            pass
+                    except:
+                        pass
 
     except Exception as e:
 
@@ -360,7 +364,7 @@ def read_qr(pdf):
 
 def retry_qr(path):
 
-    for i in range(2):
+    for i in range(5):
 
         qr = read_qr(path)
 

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="utf-8" />
+    <title>scansnap web sdk demo </title>
+    <!-- スクリプトの参照 -->
+    <!-- jQuery スクリプトファイルの参照 -->
+    <script src="Scripts/jquery-3.6.0.min.js"></script>
+    <!-- Web API を制御するスクリプトファイルの参照 -->
+    <script type="text/javascript" src="Resources/scansnap.websdk.js"></script>
+</head>
+
+<body>
+    <div>
+        <input type="button" id="scan" value="Scan" />
+        <input type="text" id="errorCode" value="0x00000000" disabled />
+    </div>
+    <div id="imgView"></div>
+    <script type="text/javascript">
+        $(function () {
+            scansnap.websdk.Initialize().done(resultCode => {
+                if (resultCode == 0) {
+                    console.log("Initialize success");
+                }
+            })
+            // 1ファイルごとに呼び出されます（イベント）
+            scansnap.websdk.RegisterEvent("OnScanToFile", (fileId) => {
+                // 画面更新
+                scansnap.websdk.GetBase64Data(fileId).done(function (base64data) {
+                    if (base64data != null) {
+                        $("#imgView").append(" <img src=data:image/png;base64," + base64data + " style='width:340px; height:250px; margin:0 10px 0 0' />")
+                    }
+                }).fail(resCode => {
+                    console.log(resCode);
+                })
+            });
+            scansnap.websdk.RegisterEvent("OnScanFinish", (files) => {
+            //  if (files != null) {
+            //      // 画像アップロード
+            //      // スキャン画像ファイルのアップロード先URL（受信側処理はお客様ご自身で実装してください）
+            //      var imgUploadURL = "http://サンプル/img";
+            //      // スキャン画像のファイル情報リストのアップロード先URL（受信側処理はお客様ご自身で実装してください）
+            //      var filelistUploadURL = "http://サンプル/filelist";
+            //      var headerParam = { "UserToken1": "ABC", "UserToken2": "DEF" };
+            //      scansnap.websdk.UploadScanImg(imgUploadURL, filelistUploadURL, files, headerParam, null, "user01").done((res, res_report) => {
+            //          console.log("upload success" + JSON.stringify(res));
+            //          if (res == -1)
+            //          {
+            //             console.log("UploadScanImg unexpected error");
+            //          } else{
+            //             if(res_report.status == 200)
+            //             {
+            //                 console.log("report success");
+            //             } else {
+            //             console.log("report fail");
+            //             }
+            //             res.forEach(e => {
+            //              if (e.status == 200) {
+            //                  console.log("upload success");
+            //              } else {
+            //                  console.log("upload fail");
+            //              }
+            //             });
+            //          }
+            //      })
+            //  }
+            });
+            // スキャンボタン Click イベント
+            $("#scan").click(function () {
+                scansnap.websdk.compression = 5; // 圧縮形式：JPEG圧縮
+                scansnap.websdk.format = 2; // ファイル形式：JPEGファイル
+                scansnap.websdk.scanMode = 2; // 画質：ファイン
+                document.getElementById("errorCode").innerText = '0x00000000';
+                // スキャナーをオープンします（メソッド）
+                scansnap.websdk.Scan().done(resultCode => {
+                    // イメージの読み取りを開始します（メソッド）
+                    console.log(resultCode);
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -25,7 +25,7 @@ VSVersionInfo(
 
             StringStruct(
               'CompanyName',
-              '株式会社システムオリジン'
+              ' '
             ),
 
             StringStruct(
@@ -45,7 +45,7 @@ VSVersionInfo(
 
             StringStruct(
               'LegalCopyright',
-              'Copyright (C) 2026 System Origin Co., Ltd.'
+              'Copyright (C) 2026 Takeo Kawamura'
             ),
 
             StringStruct(
