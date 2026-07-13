@@ -1,0 +1,15 @@
+altgraph==0.17.5
+colorama==0.4.6
+numpy==2.4.6
+opencv-python==4.13.0.92
+packaging==26.2
+pefile==2024.8.26
+pillow==12.2.0
+pyinstaller==6.21.0
+pyinstaller-hooks-contrib==2026.6
+PyMuPDF==1.27.2.3
+pystray==0.19.5
+pywin32-ctypes==0.2.3
+pyxel==2.3.6
+qrcode==8.2
+six==1.17.0
