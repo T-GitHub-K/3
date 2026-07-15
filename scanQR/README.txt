@@ -23,7 +23,7 @@ scanQR は、指定フォルダ内に保存された PDF を監視し、PDF内�
 | scanQR.ico | トレイアイコン  |
 | C:\SCAN    | 監視対象フォルダ |　デフォルト
 | C:\OUTPUT  | 保存先      |　デフォルト
-
+| C:\ERROR   | エラーﾌｧｲﾙ保存先     |　デフォルト
 
 ■パラメータ---
 優先順位：コマンドライン
@@ -39,11 +39,14 @@ scanQR.EXE --watch C:\TEMP
 ### 保存先変更
 scanQR.EXE --output D:\RESULT
 
+### エラー保存先変更
+scanQR.EXE --error D:\ERROR
+
 ### 終了待機時間変更
 scanQR.EXE --delay 30
 
 ### 複数指定
-scanQR.EXE --watch C:\SCAN --output D:\OUTPUT --delay 30
+scanQR.EXE --watch C:\SCAN --output D:\OUTPUT --error D:\ERROR --delay 30
 
 
 ・INIファイル
@@ -51,9 +54,10 @@ scanQR.py と同じ場所に作成します。
 ファイル名：scanQR.ini
 内容：
 [SCAN]
-watch_folder=C:\SCAN
-output_folder=C:\OUTPUT
-exit_delay=5
+watch_folder = C:\SCAN
+output_folder = C:\OUTPUT
+error_folder = C:\ERROR
+exit_delay = 5.0
 ```
 
 設定項目：
@@ -66,9 +70,10 @@ exit_delay=5
 
 例：
 [SCAN]
-watch_folder=D:\INPUT
-output_folder=D:\RESULT
-exit_delay=30
+watch_folder = C:\SCAN
+output_folder = C:\OUTPUT
+error_folder = C:\ERROR
+exit_delay = 5.0
 
 ■QRコード仕様
 PDF内のQRは以下形式を想定しています。
@@ -106,7 +111,7 @@ PDF全ページQR読取
  ↓
 成功？
  ├ Yes → 保存
- └ No → 次PDF
+ └ No → エラーフォルダーに保存
  ↓
 監視継続
 
@@ -169,3 +174,6 @@ Ver2.1.0.1　2026/07/01　Kawamura　読取精度改良版、スピード改善
 二値化＋拡大（高精度）
  ↓
 成功なら終了
+
+Ver2.2.0.1　2026/07/15　Kawamura　スピード改善、ERROR処理追加
+

@@ -1,5 +1,3 @@
-# scanQR.py
-
 import os
 import sys
 import time
@@ -16,11 +14,10 @@ import numpy as np
 from PIL import Image
 import pystray
 
-
 DEFAULT_FOLDER = r"C:\SCAN"
 DEFAULT_OUTPUT = r"C:\OUTPUT"
+DEFAULT_ERROR = r"C:\ERROR"  # ← エラー用フォルダのデフォルト値を追加
 DEFAULT_DELAY = 5.0
-
 
 
 def base_dir():
@@ -34,174 +31,90 @@ INI = os.path.join(BASE, "scanQR.ini")
 
 
 def load_config():
-
     watch = DEFAULT_FOLDER
     output = DEFAULT_OUTPUT
+    error = DEFAULT_ERROR  # ← 追加
     delay = DEFAULT_DELAY
 
     if os.path.exists(INI):
-
         try:
             cfg = configparser.ConfigParser()
+            cfg.read(INI, encoding="utf-8")
 
-            cfg.read(
-                INI,
-                encoding="utf-8"
-            )
-
-            watch = cfg.get(
-                "SCAN",
-                "watch_folder",
-                fallback=watch
-            )
-
-            output = cfg.get(
-                "SCAN",
-                "output_folder",
-                fallback=output
-            )
-
-            delay = cfg.getfloat(
-                "SCAN",
-                "exit_delay",
-                fallback=delay
-            )
-
+            watch = cfg.get("SCAN", "watch_folder", fallback=watch)
+            output = cfg.get("SCAN", "output_folder", fallback=output)
+            error = cfg.get("SCAN", "error_folder", fallback=error)  # ← 追加
+            delay = cfg.getfloat("SCAN", "exit_delay", fallback=delay)
         except:
             pass
 
-    return watch, output, delay
+    return watch, output, error, delay  # ← errorを追加
 
 
-WATCH_FOLDER, OUTPUT_FOLDER, EXIT_DELAY = load_config()
+WATCH_FOLDER, OUTPUT_FOLDER, ERROR_FOLDER, EXIT_DELAY = load_config()
 
 # ---------------------
 # コマンドライン引数
-# 優先順位:
-# 引数 > scanQR.ini > デフォルト値
 # ---------------------
-
 args = sys.argv[1:]
-
 i = 0
 
 while i < len(args):
-
     try:
-
         if args[i] == "--watch":
-
             WATCH_FOLDER = args[i + 1]
-
             i += 2
-
             continue
-
 
         if args[i] == "--output":
-
             OUTPUT_FOLDER = args[i + 1]
-
             i += 2
-
             continue
 
+        if args[i] == "--error":  # ← 引数でエラーフォルダを指定可能に
+            ERROR_FOLDER = args[i + 1]
+            i += 2
+            continue
 
         if args[i] == "--delay":
-
-            EXIT_DELAY = float(
-                args[i + 1]
-            )
-
+            EXIT_DELAY = float(args[i + 1])
             i += 2
-
             continue
 
-
-        if args[i] in (
-            "-h",
-            "--help"
-        ):
-
-            print()
-
+        if args[i] in ("-h", "--help"):
+            print("\nscanQR.py\n")
+            print("使用方法:")
             print(
-                "scanQR.py"
+                "python scanQR.py [--watch フォルダ] [--output フォルダ] [--error フォルダ] [--delay 秒]"
             )
-
-            print()
-
-            print(
-                "使用方法:"
-            )
-
-            print(
-                "python scanQR.py "
-                "[--watch フォルダ] "
-                "[--output フォルダ] "
-                "[--delay 秒]"
-            )
-
-            print()
-
-            print(
-                "例:"
-            )
-
-            print(
-                "python scanQR.py "
-                "--watch C:\\SCAN "
-                "--output D:\\OUTPUT "
-                "--delay 30"
-            )
-
             sys.exit()
-
     except Exception:
-
         pass
-
     i += 1
 
 
-os.makedirs(
-    WATCH_FOLDER,
-    exist_ok=True
-)
+os.makedirs(WATCH_FOLDER, exist_ok=True)
+os.makedirs(OUTPUT_FOLDER, exist_ok=True)
+os.makedirs(ERROR_FOLDER, exist_ok=True)  # ← エラーフォルダの自動作成
 
-os.makedirs(
-    OUTPUT_FOLDER,
-    exist_ok=True
-)
-
-
-PID_FILE = os.path.join(
-    WATCH_FOLDER,
-    "scanqr.pid"
-)
-
+PID_FILE = os.path.join(WATCH_FOLDER, "scanqr.pid")
 processed = set()
 icon = None
 running = True
 
 
 def stop():
-
     global running
-
     running = False
-
     try:
         os.remove(PID_FILE)
     except:
         pass
-
     try:
         if icon:
             icon.stop()
     except:
         pass
-
     os._exit(0)
 
 
@@ -209,464 +122,212 @@ def signal_stop(*_args):
     stop()
 
 
-signal.signal(
-    signal.SIGTERM,
-    signal_stop
-)
-
+signal.signal(signal.SIGTERM, signal_stop)
 atexit.register(stop)
 
 
 def stop_existing():
-
     if not os.path.exists(PID_FILE):
         return False
-
     try:
-
         with open(PID_FILE) as f:
             pid = int(f.read())
-
-        os.kill(
-            pid,
-            signal.SIGTERM
-        )
-
+        os.kill(pid, signal.SIGTERM)
         time.sleep(2)
-
         return True
-
     except:
-
         try:
             os.remove(PID_FILE)
         except:
             pass
-
         return False
 
 
 if stop_existing():
     sys.exit()
 
-
 with open(PID_FILE, "w") as f:
-    f.write(
-        str(os.getpid())
-    )
+    f.write(str(os.getpid()))
 
 
 # ---------------------
 # QR読取（全ページ対応・位置自由）
 # ---------------------
-
 def read_qr(pdf):
-
     detector = cv2.QRCodeDetector()
 
     try:
-
         with fitz.open(pdf) as doc:
+            # 速度向上のため、まずは「全ページ」を軽いプランで一通り試す
+            # それでもダメなら、もう一度「全ページ」を重いプラン（二値化・拡大）で試す
+            stages = [
+                [(200, False, 1), (300, False, 1)],  # ステージ1: 高速・標準
+                [(300, True, 2), (400, True, 2)],  # ステージ2: 高精度（二値化・拡大）
+            ]
 
-            for page_no in range(len(doc)):
+            for plans in stages:
+                for page_no in range(len(doc)):
+                    page = doc[page_no]
 
-                page = doc[page_no]
-
-                # 軽量→重い順
-                plans = [
-
-                    (200, False, 1),
-                    (300, False, 1),
-
-                    # 失敗時だけ追加
-                    (300, True, 2),
-                    (400, True, 2),
-                ]
-
-                for dpi, binary, scale in plans:
-
-                    try:
-
-                        pix = page.get_pixmap(
-                            dpi=dpi,
-                            colorspace=fitz.csGRAY,
-                            alpha=False
-                        )
-
-                        img = np.frombuffer(
-                            pix.samples,
-                            dtype=np.uint8
-                        ).reshape(
-                            pix.height,
-                            pix.width
-                        )
-
-                    except:
-                        continue
-
-
-                    if binary:
-
-                        img = cv2.threshold(
-                            img,
-                            0,
-                            255,
-                            cv2.THRESH_BINARY
-                            +
-                            cv2.THRESH_OTSU
-                        )[1]
-
-
-                    if scale > 1:
-
-                        img = cv2.resize(
-                            img,
-                            None,
-                            fx=scale,
-                            fy=scale,
-                            interpolation=cv2.INTER_LINEAR
-                        )
-
-
-                    try:
-
-                        qr, _, _ = (
-                            detector.detectAndDecode(
-                                img
+                    for dpi, binary, scale in plans:
+                        try:
+                            pix = page.get_pixmap(
+                                dpi=dpi,
+                                colorspace=fitz.csGRAY,
+                                alpha=False,
                             )
-                        )
+                            img = np.frombuffer(
+                                pix.samples, dtype=np.uint8
+                            ).reshape(pix.height, pix.width)
+                        except:
+                            continue
 
-                        if qr:
+                        if binary:
+                            img = cv2.threshold(
+                                img,
+                                0,
+                                255,
+                                cv2.THRESH_BINARY + cv2.THRESH_OTSU,
+                            )[1]
 
-                            print(
-                                f"QR検出 "
-                                f"page={page_no+1} "
-                                f"dpi={dpi}"
+                        if scale > 1:
+                            img = cv2.resize(
+                                img,
+                                None,
+                                fx=scale,
+                                fy=scale,
+                                interpolation=cv2.INTER_LINEAR,
                             )
 
-                            return qr
-
-                    except:
-                        pass
-
+                        try:
+                            qr, _, _ = detector.detectAndDecode(img)
+                            if qr:
+                                print(
+                                    f"QR検出 page={page_no+1} dpi={dpi} binary={binary}"
+                                )
+                                return qr
+                        except:
+                            pass
     except Exception as e:
-
-        print(
-            "QR読取失敗:",
-            e
-        )
+        print("QR読取失敗:", e)
 
     return None
 
-# ---------------------
-# 再試行
-# ---------------------
-
-def retry_qr(path):
-
-    for i in range(5):
-
-        qr = read_qr(path)
-
-        if qr:
-
-            return qr
-
-        print(
-            f"再試行 {i+1}/5"
-        )
-
-        time.sleep(0.3)
-
-    return None
 
 def parse_qr(text):
-
     result = {}
-
     for line in text.splitlines():
-
         if "=" in line:
-
-            k, v = line.split(
-                "=",
-                1
-            )
-
-            result[
-                k.lower().strip()
-            ] = v.strip()
-
+            k, v = line.split("=", 1)
+            result[k.lower().strip()] = v.strip()
     return result
 
 
-def move_file(
-    src,
-    folder,
-    filename
-):
-
-    os.makedirs(
-        folder,
-        exist_ok=True
-    )
-
-    dst = os.path.join(
-        folder,
-        filename
-    )
-
+def move_file(src, folder, filename):
+    os.makedirs(folder, exist_ok=True)
+    dst = os.path.join(folder, filename)
     base, ext = os.path.splitext(dst)
 
     n = 1
-
     while os.path.exists(dst):
-
-        dst = (
-            f"{base}_{n}"
-            f"{ext}"
-        )
-
+        dst = f"{base}_{n}{ext}"
         n += 1
 
-    shutil.move(
-        src,
-        dst
-    )
-
-    print(
-        "保存:",
-        dst
-    )
+    shutil.move(src, dst)
+    print("保存:", dst)
 
 
 def wait_complete(path):
-
     old = -1
-
     for _ in range(30):
-
         try:
-
-            size = os.path.getsize(
-                path
-            )
-
+            size = os.path.getsize(path)
             if size == old:
                 return True
-
             old = size
-
         except:
             pass
-
         time.sleep(1)
-
     return False
 
 
 def monitor():
-
-    print(
-        "監視:",
-        WATCH_FOLDER
-    )
-
-    print(
-        "保存:",
-        OUTPUT_FOLDER
-    )
+    print("監視:", WATCH_FOLDER)
+    print("保存:", OUTPUT_FOLDER)
+    print("エラー移動先:", ERROR_FOLDER)  # ← ログ追加
 
     empty = None
 
     while running:
-
         try:
-
             files = []
+            for f in os.listdir(WATCH_FOLDER):
+                p = os.path.join(WATCH_FOLDER, f)
+                if p.lower().endswith(".pdf"):
+                    files.append(p)
 
-            for f in os.listdir(
-                WATCH_FOLDER
-            ):
-
-                p = os.path.join(
-                    WATCH_FOLDER,
-                    f
-                )
-
-                if p.lower().endswith(
-                    ".pdf"
-                ):
-
-                    files.append(
-                        p
-                    )
-
-            target = [
-
-                x
-
-                for x in files
-
-                if x not in processed
-
-            ]
+            target = [x for x in files if x not in processed]
 
             if not target:
-
                 if empty is None:
-
                     empty = time.time()
-
-                elif (
-                    time.time()
-                    -
-                    empty
-                    >=
-                    EXIT_DELAY
-                ):
-
+                elif time.time() - empty >= EXIT_DELAY:
                     stop()
-
             else:
-
                 empty = None
 
-
             for path in target:
-
-                if not wait_complete(
-                    path
-                ):
-
-                    processed.add(
-                        path
-                    )
-
+                if not wait_complete(path):
+                    processed.add(path)
                     continue
 
-
-                qr = retry_qr(
-                    path
-                )
-
+                # 5回リトライを廃止し、内部で効率化したread_qrを1回だけ呼ぶ
+                qr = read_qr(path)
 
                 if not qr:
-
-                    print(
-                        "QRなし:",
-                        os.path.basename(
-                            path
-                        )
-                    )
-
-                    processed.add(
-                        path
-                    )
-
+                    print("QRなし（エラーフォルダへ移動）:", os.path.basename(path))
+                    processed.add(path)
+                    # 読み取り失敗したPDFを指定フォルダへ移動
+                    move_file(path, ERROR_FOLDER, os.path.basename(path))
                     continue
 
-
-                info = parse_qr(
-                    qr
-                )
-
-                filename = info.get(
-                    "filename"
-                )
-
+                info = parse_qr(qr)
+                filename = info.get("filename")
 
                 if filename:
+                    move_file(path, OUTPUT_FOLDER, filename)
+                else:
+                    # QRはあったがfilenameが含まれていない場合もエラー扱いにして移動
+                    print("QR内にfilenameなし（エラーフォルダへ移動）")
+                    move_file(path, ERROR_FOLDER, os.path.basename(path))
 
-                    move_file(
-                        path,
-                        OUTPUT_FOLDER,
-                        filename
-                    )
-
-                processed.add(
-                    path
-                )
+                processed.add(path)
 
         except Exception as e:
+            print("監視エラー:", e)
 
-            print(
-                "監視エラー:",
-                e
-            )
-
-        time.sleep(
-            0.5
-        )
+        time.sleep(0.5)
 
 
 def tray():
-
     global icon
-
-    icon_file = os.path.join(
-        BASE,
-        "scanQR.ico"
-    )
-
+    icon_file = os.path.join(BASE, "scanQR.ico")
     try:
-
-        if os.path.exists(
-            icon_file
-        ):
-
-            img = (
-                Image
-                .open(
-                    icon_file
-                )
-                .convert(
-                    "RGBA"
-                )
-            )
-
+        if os.path.exists(icon_file):
+            img = Image.open(icon_file).convert("RGBA")
         else:
-
-            img = Image.new(
-                "RGB",
-                (64, 64),
-                (
-                    0,
-                    150,
-                    255
-                )
-            )
-
+            img = Image.new("RGB", (64, 64), (0, 150, 255))
     except:
-
-        img = Image.new(
-            "RGB",
-            (64, 64),
-            (
-                255,
-                0,
-                0
-            )
-        )
+        img = Image.new("RGB", (64, 64), (255, 0, 0))
 
     icon = pystray.Icon(
         "ScanQR",
         img,
         "ScanQR",
-        menu=pystray.Menu(
-            pystray.MenuItem(
-                "終了",
-                lambda: stop()
-            )
-        ),
+        menu=pystray.Menu(pystray.MenuItem("終了", lambda: stop())),
     )
-
     icon.run()
 
 
-threading.Thread(
-    target=monitor,
-    daemon=True
-).start()
-
+threading.Thread(target=monitor, daemon=True).start()
 tray()
