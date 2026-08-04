@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>統合ニュースダッシュボード (カテゴリ別表示)</title>
+    <style>
+        :root {
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --border-color: #e2e8f0;
+            --accent-color: #2563eb;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 24px 16px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+        }
+        .header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #ffffff;
+            padding: 28px 24px;
+            border-radius: 12px;
+            margin-bottom: 32px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .header h1 {
+            margin: 0 0 8px 0;
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+        .header p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+        .update-tag {
+            display: inline-block;
+            margin-top: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: #38bdf8;
+        }
+        .category-section {
+            margin-bottom: 36px;
+        }
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+            padding-left: 10px;
+            border-left: 4px solid var(--accent-color);
+        }
+        .category-badge {
+            color: #ffffff;
+            font-size: 0.9rem;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 6px;
+        }
+        .category-count {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .news-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 18px 20px;
+            margin-bottom: 14px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .news-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 12px -3px rgba(0, 0, 0, 0.05);
+        }
+        .card-header {
+            margin-bottom: 6px;
+        }
+        .news-date {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        .news-title {
+            display: block;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-decoration: none;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        .news-title:hover {
+            color: var(--accent-color);
+        }
+        .news-summary {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin: 0 0 10px 0;
+        }
+        .card-footer {
+            text-align: right;
+        }
+        .news-link {
+            font-size: 0.825rem;
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .news-link:hover {
+            text-decoration: underline;
+        }
+        .footer {
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚕 統合ニュースダッシュボード</h1>
+            <p>カテゴリ別ニュース速報（各カテゴリ Top 20 件抽出）</p>
+            <div class="update-tag">最終更新: 2026年08月04日 18:51 | 全 81 件</div>
+        </div>
+
+        <div class="news-sections">
+            
+        <section class="category-section">
+            <div class="category-header" style="border-left-color: #f59e0b;">
+                <span class="category-badge" style="background-color: #f59e0b;">タクシー・交通</span>
+                <span class="category-count">（最新 Top 20 件）</span>
+            </div>
+            <div class="news-grid">
+                
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-04 09:45</span>
+                </div>
+                <a class="news-title" href="https://response.jp/article/2026/08/04/414912.html" target="_blank" rel="noopener noreferrer">
+                    『N-BOX』で同乗者のTV視聴とナビ操作を可能に、ブリッツ「テレビナビジャンパー」ディーラーOPナビにも適合
+                </a>
+                <p class="news-summary">（概要テキストなし）</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://response.jp/article/2026/08/04/414912.html" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-04 09:30</span>
+                </div>
+                <a class="news-title" href="https://response.jp/article/2026/08/04/414911.html" target="_blank" rel="noopener noreferrer">
+                    スーパーチャージャー搭載、カワサキ『Z H2 SE』2027年モデル発売へ　価格は247万5000円
+                </a>
+                <p class="news-summary">（概要テキストなし）</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://response.jp/article/2026/08/04/414911.html" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-04 09:15</span>
+                </div>
+                <a class="news-title" href="https://response.jp/article/2026/08/04/414910.html" target="_blank" rel="noopener noreferrer">
+                    デルタグループの車載ワイヤレス充電モジュール、ASPICE CL2認証を取得…Qi2.2対応で最大25W出力
+                </a>
+                <p class="news-summary">（概要テキストなし）</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://response.jp/article/2026/08/04/414910.html" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-04 09:11</span>
+                </div>
+                <a class="news-title" href="https://news.yahoo.co.jp/pickup/6590523?source=rss" target="_blank" rel="noopener noreferrer">
+                    防衛白書 中国軍の動き巡る注目点
+                </a>
+                <p class="news-summary">（概要テキストなし）</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://news.yahoo.co.jp/pickup/6590523?source=rss" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-04 09:00</span>
+                </div>
+                <a class="news-title" href="https://response.jp/article/2026/08/04/414909.html" target="_blank" rel="noopener noreferrer">
+                    冷やしすぎもエンジンに悪影響？ 水温と油温を適温に保つ冷却チューニングの基本～カスタムHOW TO～
+                </a>
+                <p class="news-summary">（概要テキストなし）</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://response.jp/article/2026/08/04/414909.html" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-04 08:46</span>
+                </div>
+                <a class="news-title" href="https://news.yahoo.co.jp/pickup/6590518?source=rss" target="_blank" rel="noopener noreferrer">
+                    消費減税で自民亀裂 選挙に影響は
+                </a>
+                <p class="news-summary">（概要テキストなし）</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://news.yahoo.co.jp/pickup/6590518?source=rss" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-04 08:45</span>
+                </div>
+                <a class="news-title" href="https://response.jp/article/2026/08/04/414908.html" target="_blank" rel="noopener noreferrer">
+                    GPU対応エッジAI向けHMI「TPC-B620」発表、製造現場のデータ主権を確保…アドバンテック
+                </a>
+                <p class="news-summary">（概要テキストなし）</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://response.jp/article/2026/08/04/414908.html" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-04 08:30</span>
+                </div>
+                <a class="news-title" href="https://response.jp/article/2026/08/04/414907.html" target="_blank" rel="noopener noreferrer">
+                    マウザー、車載認証済み1.5W絶縁型DC/DCモジュールを取り扱い開始…テキサス・インスツルメンツ製
+                </a>
+                <p class="news-summary">（概要テキストなし）</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://response.jp/article/2026/08/04/414907.html" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-04 08:15</span>
+                </div>
+                <a class="news-title" href="https://response.jp/article/2026/08/04/414906.html" target="_blank" rel="noopener noreferrer">
+                    新型PolyJet 3Dプリンタ「J850 Core」、3材料同時造形対応…ストラタシス・ジャパンが発売
+                </a>
+                <p class="news-summary">（概要テキストなし）</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://response.jp/article/2026/08/04/414906.html" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-04 08:00</span>
+                </div>
+                <a class="news-title" href="https://response.jp/article/2026/08/04/414905.html" target="_blank" rel="noopener noreferrer">
+                    三菱『パジェロ』新型、「S-AWC」搭載で走破性と快適性を両立…今秋デビューへ
+                </a>
+                <p class="news-summary">（概要テキストなし）</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://response.jp/article/2026/08/04/414905.html" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-04 07:52</span>
+                </div>
+                <a class="news-title" href="https://news.yahoo.co.jp/pickup/6590505?source=rss" target="_blank" rel="noopener noreferrer">
+                    8月末までに断水解消 首相が指示
+                </a>
+                <p class="news-summary">（概要テキストなし）</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://news.yahoo.co.jp/pickup/6590505?source=rss" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-04 07:45</span>
+                </div>
+                <a class="news-title" href="https://response.jp/article/2026/08/04/414904.html" target="_blank" rel="noopener noreferrer">
+                    長野・駒ヶ根の公共ライドシェア「meemo」、配車・遠隔点呼業務を受託…電脳交通
+                </a>
+                <p class="news-summary">（概要テキストなし）</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://response.jp/article/2026/08/04/414904.html" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-04 07:30</span>
+                </div>
+                <a class="news-title" href="https://response.jp/article/2026/08/04/414903.html" target="_blank" rel="noopener noreferrer">
+                    ジェイテクト、熊本地震の被災地支援で500万円寄付
+                </a>
+                <p class="news-summary">（概要テキストなし）</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://response.jp/article/2026/08/04/414903.html" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-04 07:25</span>
+                </div>
+                <a class="news-title" href="https://response.jp/article/2026/08/04/414902.html" target="_blank" rel="noopener noreferrer">
+                    トヨタの営業利益が8.8％減、1兆634億円に　第1四半期決算
+                </a>
+                <p class="news-summary">（概要テキストなし）</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://response.jp/article/2026/08/04/414902.html" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-04 07:17</span>
+                </div>
+                <a class="news-title" href="https://news.yahoo.co.jp/pickup/6590504?source=rss" target="_blank" rel="noopener noreferrer">
+                    消費減税 臨時国会に法案提出意向
+                </a>
+                <p class="news-summary">（概要テキストなし）</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://news.yahoo.co.jp/pickup/6590504?source=rss" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-04 07:15</span>
+                </div>
+                <a class="news-title" href="https://response.jp/article/2026/08/04/414901.html" target="_blank" rel="noopener noreferrer">
+                    リチウム回収技術「LiSMIC」開発のLiSTie、DG Daiwa Venturesが出資…EVなどの需要に対応
+                </a>
+                <p class="news-summary">（概要テキストなし）</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://response.jp/article/2026/08/04/414901.html" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-04 07:10</span>
+                </div>
+                <a class="news-title" href="https://response.jp/article/2026/08/04/414900.html" target="_blank" rel="noopener noreferrer">
+                    日産株価が小幅続落…４～6月期最終黒字転換も通期販売台数を不安視
+                </a>
+                <p class="news-summary">（概要テキストなし）</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://response.jp/article/2026/08/04/414900.html" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-04 07:00</span>
+                </div>
+                <a class="news-title" href="https://response.jp/article/2026/08/04/414899.html" target="_blank" rel="noopener noreferrer">
+                    『フェアレディZ』の内装材をアップサイクル、初の公式ライセンス商品発売…河西工業
+                </a>
+                <p class="news-summary">（概要テキストなし）</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://response.jp/article/2026/08/04/414899.html" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-04 06:45</span>
+                </div>
+                <a class="news-title" href="https://response.jp/article/2026/08/04/414898.html" target="_blank" rel="noopener noreferrer">
+                    dotD、データ社会推進協議会に正会員加入…自動車分野のデータ連携を強化
+                </a>
+                <p class="news-summary">（概要テキストなし）</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://response.jp/article/2026/08/04/414898.html" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-04 06:30</span>
+                </div>
+                <a class="news-title" href="https://response.jp/article/2026/08/04/414897.html" target="_blank" rel="noopener noreferrer">
+                    ナビタイム、淡路市のリアルタイムバス位置情報を提供開始…4路線に対応
+                </a>
+                <p class="news-summary">（概要テキストなし）</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://response.jp/article/2026/08/04/414897.html" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            </div>
+        </section>
+        
+        <section class="category-section">
+            <div class="category-header" style="border-left-color: #0284c7;">
+                <span class="category-badge" style="background-color: #0284c7;">経済</span>
+                <span class="category-count">（最新 Top 7 件）</span>
+            </div>
+            <div class="news-grid">
+                
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-04 09:49</span>
+                </div>
+                <a class="news-title" href="https://news.yahoo.co.jp/pickup/6590528?source=rss" target="_blank" rel="noopener noreferrer">
+                    小学館 社長ら26人が報酬返納
+                </a>
+                <p class="news-summary">（概要テキストなし）</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://news.yahoo.co.jp/pickup/6590528?source=rss" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-04 08:30</span>
+                </div>
+                <a class="news-title" href="https://news.yahoo.co.jp/pickup/6590517?source=rss" target="_blank" rel="noopener noreferrer">
+                    中部電 7万人超の情報漏えい恐れ
+                </a>
+                <p class="news-summary">（概要テキストなし）</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://news.yahoo.co.jp/pickup/6590517?source=rss" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-04 08:25</span>
+                </div>
+                <a class="news-title" href="https://news.yahoo.co.jp/pickup/6590514?source=rss" target="_blank" rel="noopener noreferrer">
+                    九州道 8月後半には通行可能に
+                </a>
+                <p class="news-summary">（概要テキストなし）</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://news.yahoo.co.jp/pickup/6590514?source=rss" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-04 08:05</span>
+                </div>
+                <a class="news-title" href="https://news.yahoo.co.jp/pickup/6590512?source=rss" target="_blank" rel="noopener noreferrer">
+                    大企業の賃上げ率5.37% 春闘集計
+                </a>
+                <p class="news-summary">（概要テキストなし）</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://news.yahoo.co.jp/pickup/6590512?source=rss" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-04 06:35</span>
+                </div>
+                <a class="news-title" href="https://news.yahoo.co.jp/pickup/6590500?source=rss" target="_blank" rel="noopener noreferrer">
+                    オンワード 3人死亡した被災経緯
+                </a>
+                <p class="news-summary">（概要テキストなし）</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://news.yahoo.co.jp/pickup/6590500?source=rss" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-04 05:24</span>
+                </div>
+                <a class="news-title" href="https://news.yahoo.co.jp/pickup/6590495?source=rss" target="_blank" rel="noopener noreferrer">
+                    「財政再建」宣言へ 埼玉・久喜市
+                </a>
+                <p class="news-summary">（概要テキストなし）</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://news.yahoo.co.jp/pickup/6590495?source=rss" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-03 22:56</span>
+                </div>
+                <a class="news-title" href="https://news.yahoo.co.jp/pickup/6590450?source=rss" target="_blank" rel="noopener noreferrer">
+                    昆虫食で炎上し倒産 再起目指す訳
+                </a>
+                <p class="news-summary">（概要テキストなし）</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://news.yahoo.co.jp/pickup/6590450?source=rss" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            </div>
+        </section>
+        
+        <section class="category-section">
+            <div class="category-header" style="border-left-color: #2563eb;">
+                <span class="category-badge" style="background-color: #2563eb;">IT・技術</span>
+                <span class="category-count">（最新 Top 20 件）</span>
+            </div>
+            <div class="news-grid">
+                
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-04 17:31</span>
+                </div>
+                <a class="news-title" href="https://www.itmedia.co.jp/news/article/2608/04/2000000369/" target="_blank" rel="noopener noreferrer">
+                    Discordの「オンラインになったとき、フレンドに通知する」機能が不評　「かまちょすぎる」「勝手に伝えないで」
+                </a>
+                <p class="news-summary">ゲーマー向けチャットツール「Discord」が備える「自分がオンラインになったとき、フレンドに通知する」機能がXで不評だ。Xでは「用もないのに勝手にかまちょ（かまってちょうだいの略語）しないでほしい」...</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://www.itmedia.co.jp/news/article/2608/04/2000000369/" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-04 08:29</span>
+                </div>
+                <a class="news-title" href="https://news.yahoo.co.jp/pickup/6590515?source=rss" target="_blank" rel="noopener noreferrer">
+                    終了した「104」今もかける60代母
+                </a>
+                <p class="news-summary">（概要テキストなし）</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://news.yahoo.co.jp/pickup/6590515?source=rss" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-04 08:14</span>
+                </div>
+                <a class="news-title" href="https://news.yahoo.co.jp/pickup/6590513?source=rss" target="_blank" rel="noopener noreferrer">
+                    ドコモ バイクシェア提供一時停止
+                </a>
+                <p class="news-summary">（概要テキストなし）</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://news.yahoo.co.jp/pickup/6590513?source=rss" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-04 17:08</span>
+                </div>
+                <a class="news-title" href="https://www.itmedia.co.jp/news/article/2608/04/2000000376/" target="_blank" rel="noopener noreferrer">
+                    「モンハンワイルズ」価格改定で半額に　販売数の伸び悩み、克服なるか
+                </a>
+                <p class="news-summary">カプコンがゲーム「モンスターハンターワイルズ」の価格を改定した。これまでゲーム本体を税込9900円で提供していたところ、今後は同4990円で販売する。</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://www.itmedia.co.jp/news/article/2608/04/2000000376/" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-04 17:07</span>
+                </div>
+                <a class="news-title" href="https://www.itmedia.co.jp/news/article/2608/04/2000000377/" target="_blank" rel="noopener noreferrer">
+                    AI普及でデザイン業の倒産が前年比2.7倍に　「独自性なき企業は淘汰」　東京商工リサーチ
+                </a>
+                <p class="news-summary">東京商工リサーチは8月2日、グラフィックデザインやインテリアデザインなどを手掛ける「デザイン業」で、負債1000万円以上の倒産が急増していると発表した。生成AIの普及によるデザイン業務の内製化などが影...</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://www.itmedia.co.jp/news/article/2608/04/2000000377/" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-04 15:56</span>
+                </div>
+                <a class="news-title" href="https://www.itmedia.co.jp/news/article/2608/04/2000000378/" target="_blank" rel="noopener noreferrer">
+                    ドコモ・バイクシェア、サービス一時停止　不具合の復旧見通し立たず
+                </a>
+                <p class="news-summary">「安定したサービス提供の見通しが立っていない」とし、再開時期は未定。</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://www.itmedia.co.jp/news/article/2608/04/2000000378/" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-04 05:20</span>
+                </div>
+                <a class="news-title" href="https://news.yahoo.co.jp/pickup/6590492?source=rss" target="_blank" rel="noopener noreferrer">
+                    Xに「人工地震」なぜデマ出回る
+                </a>
+                <p class="news-summary">（概要テキストなし）</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://news.yahoo.co.jp/pickup/6590492?source=rss" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-04 13:43</span>
+                </div>
+                <a class="news-title" href="https://www.itmedia.co.jp/news/article/2608/04/2000000374/" target="_blank" rel="noopener noreferrer">
+                    「イオンモール熊本にガスコージェネは設置していない」　SNSの噂を経産省が否定
+                </a>
+                <p class="news-summary">「一部SNSで事実と異なる情報が流れていますが、イオンモール熊本には、ガスコージェネレーションやガス発電機は設置していないことを確認しています」</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://www.itmedia.co.jp/news/article/2608/04/2000000374/" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-04 13:16</span>
+                </div>
+                <a class="news-title" href="https://www.itmedia.co.jp/news/article/2608/04/2000000373/" target="_blank" rel="noopener noreferrer">
+                    Telegram、App Storeから一時消える 現在は復旧 「ガイドライン違反のコンテンツを検出」
+                </a>
+                <p class="news-summary">メッセージアプリ「Telegram」が8月3日（現地時間）、米Appleの「App Store」から一時姿を消した。編集部でも日本時間の4日にダウンロードできない状態を確認したが、現在は復旧している。</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://www.itmedia.co.jp/news/article/2608/04/2000000373/" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-04 12:48</span>
+                </div>
+                <a class="news-title" href="https://www.itmedia.co.jp/news/article/2608/04/2000000372/" target="_blank" rel="noopener noreferrer">
+                    au、1台のスマホに2つ目の電話番号「セカンドナンバー」開始　月額550円
+                </a>
+                <p class="news-summary">主回線とは別に、仕事や趣味用、各種登録用に使うといった利用シーンを想定している。</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://www.itmedia.co.jp/news/article/2608/04/2000000372/" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-04 12:39</span>
+                </div>
+                <a class="news-title" href="https://www.itmedia.co.jp/news/article/2608/04/2000000371/" target="_blank" rel="noopener noreferrer">
+                    TSMC、熊本地震の被災地に2億5000万円を寄付　第1工場は通常生産に復帰
+                </a>
+                <p class="news-summary">台湾TSMCは8月3日、令和8年熊本地震の被災地支援として2億5000万円の寄付を発表した。地震で操業を一時中断していた熊本第1工場も、同日までに通常の生産体制に戻っている。</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://www.itmedia.co.jp/news/article/2608/04/2000000371/" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-04 11:34</span>
+                </div>
+                <a class="news-title" href="https://www.itmedia.co.jp/news/article/2608/04/2000000367/" target="_blank" rel="noopener noreferrer">
+                    「圧縮効果」は望遠レンズによるものじゃない　その発動条件とは？
+                </a>
+                <p class="news-summary">2カ月ほど前だったか、とあるSNSで「圧縮効果は望遠レンズによるものじゃない」という書き込みがあり、それに対していろんな意見が飛び交って混沌としていた。確かに「望遠レンズ」によるものじゃないのである。</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://www.itmedia.co.jp/news/article/2608/04/2000000367/" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-04 08:30</span>
+                </div>
+                <a class="news-title" href="https://www.itmedia.co.jp/news/article/2608/04/2000000366/" target="_blank" rel="noopener noreferrer">
+                    EU、AIの透明性義務の適用を開始　生成コンテンツにラベルとマーク義務、違反に最大1500万ユーロ
+                </a>
+                <p class="news-summary">EUの欧州委員会はAI規制法「EU AI Act」の第50条に基づく透明性ルールの適用を開始した。生成AIやディープフェイク等を扱う事業者に対し、AIとの対話の明示やコンテンツへのラベル・機械可読マー...</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://www.itmedia.co.jp/news/article/2608/04/2000000366/" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-04 07:00</span>
+                </div>
+                <a class="news-title" href="https://www.itmedia.co.jp/news/article/2608/04/2000000352/" target="_blank" rel="noopener noreferrer">
+                    立ち話する2人の間には「見えない壁」がある　米研究者が4911人を観察、判明した意外な崩し方
+                </a>
+                <p class="news-summary">米カリフォルニア大学サンディエゴ校に所属する研究者らが発表した論文「Invisible walls: how pedestrians navigate around social interactio...</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://www.itmedia.co.jp/news/article/2608/04/2000000352/" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-03 20:08</span>
+                </div>
+                <a class="news-title" href="https://www.itmedia.co.jp/news/article/2608/03/2000000365/" target="_blank" rel="noopener noreferrer">
+                    実在女性の中学時代の体操着姿からAIわいせつ画像作成・投稿か　男逮捕、高校生書類送検
+                </a>
+                <p class="news-summary">女性の写真を生成AIで加工したわいせつ画像をSNSに投稿したとして、警視庁などは、名誉毀損（きそん）と児童買春・ポルノ禁止法違反（公然陳列）の疑いで、兵庫県姫路市の会社員、井元健太容疑者（32）を逮捕...</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://www.itmedia.co.jp/news/article/2608/03/2000000365/" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-03 20:05</span>
+                </div>
+                <a class="news-title" href="https://www.itmedia.co.jp/news/article/2608/03/2000000364/" target="_blank" rel="noopener noreferrer">
+                    つい見せたくなる延長コード、開発したのは東大阪の電線メーカー　3000万円の機械導入で思いを形に
+                </a>
+                <p class="news-summary">新たな「快適」や「便利」を届けたい、消費者と直接つながりたい…。私たちが何げなく手にする製品には、作り手のさまざまな思いと、それを形に変えた確かな技術が込められている。大阪府が中小企業の創造力にあふれ...</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://www.itmedia.co.jp/news/article/2608/03/2000000364/" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-03 10:56</span>
+                </div>
+                <a class="news-title" href="https://news.yahoo.co.jp/pickup/6590412?source=rss" target="_blank" rel="noopener noreferrer">
+                    万博関連ドメイン 成人向けに転用
+                </a>
+                <p class="news-summary">（概要テキストなし）</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://news.yahoo.co.jp/pickup/6590412?source=rss" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-03 19:38</span>
+                </div>
+                <a class="news-title" href="https://www.itmedia.co.jp/news/article/2608/03/2000000363/" target="_blank" rel="noopener noreferrer">
+                    キオクシアに約366億円の賠償命じる判決　米特許訴訟、陪審評決に続き　「あらゆる法的手段講じる」
+                </a>
+                <p class="news-summary">キオクシアホールディングスは8月3日、子会社のキオクシアとKioxia Americaに対する米国での特許権侵害訴訟で、米連邦地方裁判所から約2億2900万ドル（約366億円）の損害賠償支払いを命じる...</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://www.itmedia.co.jp/news/article/2608/03/2000000363/" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-03 19:22</span>
+                </div>
+                <a class="news-title" href="https://www.itmedia.co.jp/news/article/2608/03/2000000360/" target="_blank" rel="noopener noreferrer">
+                    ミャクミャク関連サイトがアダルトサイトに……大阪万博のドメイン運用終了→転用続出で物議　悪用の懸念も
+                </a>
+                <p class="news-summary">大阪・関西万博の関連事業で使われていた旧ドメイン6件が、SNSで物議を醸している。一部は成人向けサイトなどに転用され、Xでは管理責任を問う声が相次いだ。万博協会は7月29日、旧URLやメールアドレスは...</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://www.itmedia.co.jp/news/article/2608/03/2000000360/" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-03 19:19</span>
+                </div>
+                <a class="news-title" href="https://www.itmedia.co.jp/news/article/2608/03/2000000362/" target="_blank" rel="noopener noreferrer">
+                    「コードは一行も書いていない」　アイドルの宮本佳林さん、AIで配信システムを丸ごと構築　“技術ブログ”が話題
+                </a>
+                <p class="news-summary">元Juice=Juiceの宮本佳林さんが8月1日、10時間のYouTube生配信を支えるシステムをAIとともに自作したと自身のブログで公開した。プログラミング経験ゼロで作り上げた開発の裏側をつづった“...</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://www.itmedia.co.jp/news/article/2608/03/2000000362/" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            </div>
+        </section>
+        
+        <section class="category-section">
+            <div class="category-header" style="border-left-color: #059669;">
+                <span class="category-badge" style="background-color: #059669;">宇宙</span>
+                <span class="category-count">（最新 Top 20 件）</span>
+            </div>
+            <div class="news-grid">
+                
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-04 08:24</span>
+                </div>
+                <a class="news-title" href="https://sorae.info/astronomy/202608-starry-sky.html" target="_blank" rel="noopener noreferrer">
+                    2026年8月の星空情報：12日夜～13日未明にペルセウス座流星群を見よう
+                </a>
+                <p class="news-summary">8月、強い日差しが肌を焼くような蒸し暑い日が続きます。星空では、盛夏を彩る1等星を持つ豪華な星座を見ることができます。 天頂付近には夏の大三角が見えます。夏の大三角は、「こと座」のベガ、「わし座」のア...</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://sorae.info/astronomy/202608-starry-sky.html" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-04 05:53</span>
+                </div>
+                <a class="news-title" href="https://sorae.info/space/20260804-h3f9.html" target="_blank" rel="noopener noreferrer">
+                    JAXAが「H3」ロケット9号機の打ち上げを台風接近にともない延期　「みちびき」7号機を搭載
+                </a>
+                <p class="news-summary">JAXA（宇宙航空研究開発機構）は2026年8月3日、内閣府の準天頂衛星システム（QZSS）「みちびき」の測位衛星「みちびき」7号機（QZS-7）を搭載する「H3」ロケット9号機の打ち上げを延期すると...</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://sorae.info/space/20260804-h3f9.html" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-04 01:32</span>
+                </div>
+                <a class="news-title" href="https://sorae.info/astronomy/20260804-lagoon-nebula.html" target="_blank" rel="noopener noreferrer">
+                    穏やかならざる星形成の現場　ハッブル宇宙望遠鏡が観測した「干潟星雲」の中心部
+                </a>
+                <p class="news-summary">こちらは、ハッブル宇宙望遠鏡が観測した輝線星雲「干潟星雲」（Lagoon Nebula、Messier 8）の中心部です。干潟星雲はいて座の方向、地球から約4000光年先にあります。 視野いっぱいに広...</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://sorae.info/astronomy/20260804-lagoon-nebula.html" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-03 12:41</span>
+                </div>
+                <a class="news-title" href="https://sorae.info/astronomy/20260803-black-hole-wind.html" target="_blank" rel="noopener noreferrer">
+                    巨大なブラックホールの“風”は銀河のはるか外まで到達　エネルギーは想定の100倍以上
+                </a>
+                <p class="news-summary">多くの銀河の中心には、質量が太陽の100万倍を超えるような超大質量ブラックホール（超巨大ブラックホール）が存在するとされています。これらは周囲の物質を吸い込む一方で、その一部を高速のガスとして噴き出す...</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://sorae.info/astronomy/20260803-black-hole-wind.html" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-03 08:21</span>
+                </div>
+                <a class="news-title" href="https://sorae.info/space/20260803-nasa-ames-super-heavy.html" target="_blank" rel="noopener noreferrer">
+                    NASA施設で実施されたスーパーヘビーの風洞試験　改良版機体の空力データを取得
+                </a>
+                <p class="news-summary">一見すると何かの金属部品に見えるこの物体。実は、アメリカのSpaceX（スペースX）社が開発中の再使用型ロケット「Starship（スターシップ）」の1段目にあたる大型ロケット「Super Heavy...</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://sorae.info/space/20260803-nasa-ames-super-heavy.html" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-03 06:56</span>
+                </div>
+                <a class="news-title" href="https://sorae.info/space/20260803-roman-sd-card.html" target="_blank" rel="noopener noreferrer">
+                    ローマン宇宙望遠鏡に記念プレートを取り付け　135万人分の名前とともに打ち上げへ
+                </a>
+                <p class="news-summary">NASA（アメリカ航空宇宙局）は2026年7月31日付で、打ち上げ準備が進む次世代の宇宙望遠鏡「ナンシー・グレース・ローマン（Nancy Grace Roman）」に、記念プレートが取り付けられたこと...</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://sorae.info/space/20260803-roman-sd-card.html" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-03 01:48</span>
+                </div>
+                <a class="news-title" href="https://sorae.info/report/202606-ksv-hybrid-rocket-seminar.html" target="_blank" rel="noopener noreferrer">
+                    【KSVセミナーレポート】高度100kmを目指すハイブリッドロケット　神奈川大学・みなとロケットの挑戦
+                </a>
+                <p class="news-summary">神奈川県相模原市緑区の宇宙関連企業交流拠点「KANAGAWA Space Village」で2026年6月19日、神奈川県宇宙産業参入促進セミナー「ハイブリッドロケットが拓く、ものづくり企業の宇宙ビジ...</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://sorae.info/report/202606-ksv-hybrid-rocket-seminar.html" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-02 12:00</span>
+                </div>
+                <a class="news-title" href="https://sorae.info/astronomy/20260802-curiosity-honeycomb-textures.html" target="_blank" rel="noopener noreferrer">
+                    火星の大地に広がるかつてない規模の“ハチの巣模様”　NASA探査車キュリオシティが遭遇
+                </a>
+                <p class="news-summary">こちらは、NASA（アメリカ航空宇宙局）の火星探査車「キュリオシティ（Curiosity）」が撮影した火星の表面。まるでハチの巣のような多角形の模様が、あたり一面をびっしりと覆っているのがわかります。...</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://sorae.info/astronomy/20260802-curiosity-honeycomb-textures.html" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-02 01:59</span>
+                </div>
+                <a class="news-title" href="https://sorae.info/astronomy/20260802-m77.html" target="_blank" rel="noopener noreferrer">
+                    穏やかな姿に秘められた過去　すばる望遠鏡が観測した渦巻銀河「M77」
+                </a>
+                <p class="news-summary">こちらは、国立天文台ハワイ観測所のすばる望遠鏡で観測した渦巻銀河「M77（Messier 77）」。くじら座の方向、地球から約4800万光年先にあります。 黄金のように輝く明るい中心部分から、外側へと...</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://sorae.info/astronomy/20260802-m77.html" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-01 12:58</span>
+                </div>
+                <a class="news-title" href="https://sorae.info/astronomy/20260801-venus-active.html" target="_blank" rel="noopener noreferrer">
+                    金星では地溝帯の一部が現在も拡大し続けている？　将来の金星探査ミッションに期待
+                </a>
+                <p class="news-summary">スイス連邦工科大学チューリッヒ校（ETH Zürich）のXi Yang氏（修士課程当時）、同校のTaras V. Gerya教授、フライブルク大学のAnna J. P. Gülcher氏は、最新の数...</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://sorae.info/astronomy/20260801-venus-active.html" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-01 11:37</span>
+                </div>
+                <a class="news-title" href="https://sorae.info/astronomy/20260801-lighthouse-pulsar.html" target="_blank" rel="noopener noreferrer">
+                    “灯台パルサー”周辺の磁場構造を詳細に分析　NASAのX線偏光観測衛星「IXPE」が観測
+                </a>
+                <p class="news-summary">スタンフォード大学の大学院生Jack T. Dinsmore氏を筆頭とする研究チームは、パルサー「PSR J1101-6101」の磁場を直接測定することに初めて成功したとする研究成果を発表しました。研...</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://sorae.info/astronomy/20260801-lighthouse-pulsar.html" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-01 05:49</span>
+                </div>
+                <a class="news-title" href="https://sorae.info/ssn/20260801-starlink-g17-52.html" target="_blank" rel="noopener noreferrer">
+                    【G17-52】スペースXがスターリンク衛星24機を軌道投入　1段目は26回目の飛行
+                </a>
+                <p class="news-summary">SpaceX（スペースX）は日本時間2026年8月1日、ヴァンデンバーグ宇宙軍基地から「Falcon 9（ファルコン9）」ロケットを打ち上げ、Starlink（スターリンク）衛星24機を所定の軌道へ投...</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://sorae.info/ssn/20260801-starlink-g17-52.html" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-01 01:45</span>
+                </div>
+                <a class="news-title" href="https://sorae.info/astronomy/20260801-m31-star-formation.html" target="_blank" rel="noopener noreferrer">
+                    アンドロメダ銀河の星形成率が過去5億年間で低下　ハッブル宇宙望遠鏡の観測データを分析
+                </a>
+                <p class="news-summary">ワシントン大学のTobin Wainer氏を筆頭とする研究チームは、地球から約250万光年先の「アンドロメダ銀河（M31）」における星形成率が、過去約5億年にわたって低下し続けているとする研究成果を発...</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://sorae.info/astronomy/20260801-m31-star-formation.html" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-07-31 12:04</span>
+                </div>
+                <a class="news-title" href="https://sorae.info/astronomy/20260731-formation-of-gravastar.html" target="_blank" rel="noopener noreferrer">
+                    「グラバスター」の生成プロセスを解明　これまで作り方がわからなかったブラックホール代替天体
+                </a>
+                <p class="news-summary">ブラックホールは重力が生み出す究極的な天体ですが、特異点や事象の地平面のような、現代物理学と相性の悪い性質も存在します。このため、ブラックホールと似ているが異なる性質を持つ天体がいくつか考え出されてお...</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://sorae.info/astronomy/20260731-formation-of-gravastar.html" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-07-31 09:48</span>
+                </div>
+                <a class="news-title" href="https://sorae.info/astronomy/20260731-ngc-4654.html" target="_blank" rel="noopener noreferrer">
+                    “逆風”にも負けず星々を育む渦巻銀河　ハッブル宇宙望遠鏡が観測した「NGC 4654」
+                </a>
+                <p class="news-summary">こちらは、ハッブル宇宙望遠鏡が観測した渦巻銀河「NGC 4654」。おとめ座の方向、地球から約7200万光年先にあります。 渦巻腕（渦状腕）に囲まれた中心部分に棒状構造がある「棒渦巻銀河」と、棒状構造...</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://sorae.info/astronomy/20260731-ngc-4654.html" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-07-31 08:12</span>
+                </div>
+                <a class="news-title" href="https://sorae.info/ssn/20260731-nrol-95.html" target="_blank" rel="noopener noreferrer">
+                    スペースX、アメリカ国家偵察局「NROL-95」ミッションの打ち上げを実施
+                </a>
+                <p class="news-summary">SpaceX（スペースX）は日本時間2026年7月30日、ケープカナベラル宇宙軍基地から「Falcon 9（ファルコン9）」ロケットを打ち上げました。搭載されていたのはNRO（アメリカ国家偵察局）の人...</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://sorae.info/ssn/20260731-nrol-95.html" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-07-31 06:04</span>
+                </div>
+                <a class="news-title" href="https://sorae.info/ssn/20260731-tjsw-27ab.html" target="_blank" rel="noopener noreferrer">
+                    中国が「長征6号改」を打ち上げ　通信技術試験衛星27号A/B星を軌道投入
+                </a>
+                <p class="news-summary">CASC（中国航天科技集団）は日本時間2026年7月30日、太原衛星発射センターから「長征6号改」ロケットを打ち上げ、搭載していた通信技術試験衛星2機を所定の軌道へ投入しました。 打ち上げに関する情報...</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://sorae.info/ssn/20260731-tjsw-27ab.html" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-07-31 02:18</span>
+                </div>
+                <a class="news-title" href="https://sorae.info/space/20260731-hayabusa2-torifune.html" target="_blank" rel="noopener noreferrer">
+                    JAXA探査機「はやぶさ2」フライバイ時に小惑星トリフネ表面から400mまで接近していた
+                </a>
+                <p class="news-summary">JAXA（宇宙航空研究開発機構）は2026年7月30日、小惑星探査機「はやぶさ2」が7月5日に行った小惑星「トリフネ（Torifune）」のフライバイ（接近通過）の成果について記者説明会を開催し、あわ...</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://sorae.info/space/20260731-hayabusa2-torifune.html" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-07-31 00:59</span>
+                </div>
+                <a class="news-title" href="https://sorae.info/ssn/20260731-cz7a-tianlian3-01.html" target="_blank" rel="noopener noreferrer">
+                    中国、長征7号改で第3世代データ中継衛星「天鏈3号01星」を打ち上げ
+                </a>
+                <p class="news-summary">CASC（中国航天科技集団）は日本時間2026年7月29日、文昌航天発射場から「長征7号改」ロケットを打ち上げ、データ中継衛星「天鏈3号01星（Tianlian-3 01）」を所定の軌道へ投入しました...</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://sorae.info/ssn/20260731-cz7a-tianlian3-01.html" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-07-30 23:46</span>
+                </div>
+                <a class="news-title" href="https://sorae.info/biz/20260731-iqps.html" target="_blank" rel="noopener noreferrer">
+                    QPS研究所、ロケットラボと小型SAR衛星3機分の打ち上げを新たに契約
+                </a>
+                <p class="news-summary">株式会社QPS研究所は2026年7月30日、同社の小型SAR（合成開口レーダー）衛星「QPS-SAR」3機分の打ち上げ契約を、アメリカの宇宙企業Rocket Lab（ロケットラボ）との間で新たに締結し...</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://sorae.info/biz/20260731-iqps.html" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            </div>
+        </section>
+        
+        <section class="category-section">
+            <div class="category-header" style="border-left-color: #dc2626;">
+                <span class="category-badge" style="background-color: #dc2626;">科学・文化</span>
+                <span class="category-count">（最新 Top 14 件）</span>
+            </div>
+            <div class="news-grid">
+                
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-03 21:41</span>
+                </div>
+                <a class="news-title" href="https://news.web.nhk/newsweb/na/na-k10015195201000" target="_blank" rel="noopener noreferrer">
+                    豊臣秀吉の妻ゆかりの京都 高台寺の敷地内で火事 ほぼ消し止め
+                </a>
+                <p class="news-summary">3日夜、京都市東山区にある豊臣秀吉の妻、ねねゆかりの高台寺の敷地内で火事があり、通報からおよそ40分後にほぼ消し止められましたが、敷地内の建物が燃えました。警察と消防が被害の状況などを調べています。</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://news.web.nhk/newsweb/na/na-k10015195201000" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-03 21:29</span>
+                </div>
+                <a class="news-title" href="https://news.web.nhk/newsweb/na/na-k10015195291000" target="_blank" rel="noopener noreferrer">
+                    小学館 漫画家起用問題で第三者委“人権侵害 助長または加担”
+                </a>
+                <p class="news-summary">小学館の漫画アプリの編集部が、性加害事件を起こして連載が中止となった漫画家を別のペンネームで原作者として再び起用していた問題で、小学館が設置した第三者委員会は、被害女性への「人権侵害への助長または加担...</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://news.web.nhk/newsweb/na/na-k10015195291000" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-03 17:43</span>
+                </div>
+                <a class="news-title" href="https://news.web.nhk/newsweb/na/na-k10015195091000" target="_blank" rel="noopener noreferrer">
+                    「みちびき7号機」7日の打ち上げは延期 台風影響で JAXA
+                </a>
+                <p class="news-summary">今月7日、鹿児島県の種子島宇宙センターからH3ロケットで打ち上げられる予定だった、日本版GPS衛星「みちびき」の7号機について、JAXA＝宇宙航空研究開発機構は、台風13号の影響で天候の悪化が予想され...</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://news.web.nhk/newsweb/na/na-k10015195091000" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-08-01 15:14</span>
+                </div>
+                <a class="news-title" href="https://news.web.nhk/newsweb/na/na-k10015192831000" target="_blank" rel="noopener noreferrer">
+                    ジャワ原人 赤ちゃんを未発達なまま出産し協力して子育てか
+                </a>
+                <p class="news-summary">およそ10万年前の「ジャワ原人」の赤ちゃんは、現代のヒトと同じように長期間子育てが必要な、未発達な状態で生まれていたとみられることが、東京大学などのグループの骨の分析で明らかになりました。グループでは...</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://news.web.nhk/newsweb/na/na-k10015192831000" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-07-31 13:57</span>
+                </div>
+                <a class="news-title" href="https://news.web.nhk/newsweb/na/na-k10015191911000" target="_blank" rel="noopener noreferrer">
+                    松本清張デビュー前の作品発見 ミステリー仕立てなど2小説
+                </a>
+                <p class="news-summary">昭和を代表する作家、松本清張がデビュー前に、別のペンネームでミステリー仕立ての作品など2つの小説を発表していたことが研究者の調査で確認されました。研究者は「清張の幻のデビュー作と言える」と話しています...</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://news.web.nhk/newsweb/na/na-k10015191911000" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-07-31 12:19</span>
+                </div>
+                <a class="news-title" href="https://news.web.nhk/newsweb/na/na-k10015191781000" target="_blank" rel="noopener noreferrer">
+                    はやぶさ2は小惑星表面から約400メートルを通過 JAXA
+                </a>
+                <p class="news-summary">日本の探査機「はやぶさ2」が小惑星「トリフネ」のすぐそばを極めて速いスピードで通過したミッションで、JAXA＝宇宙航空研究開発機構が新たな発表を行いました。通過した際の小惑星表面からの距離はおよそ40...</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://news.web.nhk/newsweb/na/na-k10015191781000" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-07-30 19:16</span>
+                </div>
+                <a class="news-title" href="https://news.web.nhk/newsweb/na/na-k10015191101000" target="_blank" rel="noopener noreferrer">
+                    子どもSNS利用 一律の年齢制限必要か議論継続へ 国の作業部会
+                </a>
+                <p class="news-summary">子どものインターネットの利用をめぐる国の作業部会が開かれ、SNSの利用に国として一律の年齢制限をかけるかどうか議論を継続する方針が示されました。</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://news.web.nhk/newsweb/na/na-k10015191101000" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-07-30 19:11</span>
+                </div>
+                <a class="news-title" href="https://news.web.nhk/newsweb/na/na-k10015191061000" target="_blank" rel="noopener noreferrer">
+                    中部電力 浜岡原発データ不正 現場は審査の早期終了を意図か
+                </a>
+                <p class="news-summary">中部電力が静岡県にある浜岡原子力発電所の地震の想定に関するデータを改ざんしていた問題で、現場の担当者らは、原子力規制委員会による審査を早く終わらせようと不正なデータ処理を行っていたことが、関係者への取...</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://news.web.nhk/newsweb/na/na-k10015191061000" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-07-30 17:58</span>
+                </div>
+                <a class="news-title" href="https://news.web.nhk/newsweb/na/na-k10015190991000" target="_blank" rel="noopener noreferrer">
+                    熊本県内のモニタリングポストが復旧
+                </a>
+                <p class="news-summary">地震による被害が出ている熊本県では28日の夜遅くから放射線量を測定するモニタリングポストのデータが送れなくなっていましたが、30日午前、復旧しました。地震による停電が原因とみられ、原子力規制委員会が調...</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://news.web.nhk/newsweb/na/na-k10015190991000" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-07-30 12:55</span>
+                </div>
+                <a class="news-title" href="https://news.web.nhk/newsweb/na/na-k10015190561000" target="_blank" rel="noopener noreferrer">
+                    アメリカが人型ロボットの輸入禁止を発表 中国政府は非難
+                </a>
+                <p class="news-summary">急速に開発が進んでいる人型のロボット「ヒューマノイド」について、アメリカは外国からの輸入を禁止すると発表しました。市場でのシェアを高める中国を念頭にした措置とみられ、中国政府は「中国企業への抑圧だ」な...</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://news.web.nhk/newsweb/na/na-k10015190561000" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-07-29 17:14</span>
+                </div>
+                <a class="news-title" href="https://news.web.nhk/newsweb/na/na-k10015189831000" target="_blank" rel="noopener noreferrer">
+                    日本の民間月着陸船 再来年にH3ロケットで打ち上げへ
+                </a>
+                <p class="news-summary">民間による月面着陸を目指す東京のベンチャー企業は、再来年の打ち上げに向けて開発中の新型の月着陸船について、これまで利用していたアメリカのロケットではなく、日本のH3ロケットで打ち上げることを決めたと発...</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://news.web.nhk/newsweb/na/na-k10015189831000" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-07-29 15:27</span>
+                </div>
+                <a class="news-title" href="https://news.web.nhk/newsweb/na/na-k10015189731000" target="_blank" rel="noopener noreferrer">
+                    アンソロピックCEOなど米AI企業幹部 AI開発にペース管理必要
+                </a>
+                <p class="news-summary">AIの開発競争が過熱する中、アメリカのAI新興企業の幹部など1100人余りが、AIの開発ペースを調整する国際的な取り組みをアメリカ政府が支援するよう求める声明文を公表しました。「私たちの理解や制御能力...</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://news.web.nhk/newsweb/na/na-k10015189731000" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-07-29 14:03</span>
+                </div>
+                <a class="news-title" href="https://news.web.nhk/newsweb/na/na-k10015189631000" target="_blank" rel="noopener noreferrer">
+                    熊本地震 SNSで偽の救助要請 生成AIで作った偽動画も 注意を
+                </a>
+                <p class="news-summary">熊本県で震度7を観測した地震のあと、SNSでは実際には存在しない住所での偽の救助要請や、生成AIで作った被害の様子だとする偽の動画などが広がっています。実態とは異なる情報が広がると、災害対応の活動に影...</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://news.web.nhk/newsweb/na/na-k10015189631000" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="card-header">
+                    <span class="news-date">⏱ 2026-07-29 02:43</span>
+                </div>
+                <a class="news-title" href="https://news.web.nhk/newsweb/na/na-k10015189231000" target="_blank" rel="noopener noreferrer">
+                    熊本城 石垣の崩落 28か所で確認
+                </a>
+                <p class="news-summary">熊本城総合事務所によりますと、震度5強の揺れを観測した熊本市中央区にある熊本城では、石垣の崩落が28か所で確認されたということです。</p>
+                <div class="card-footer">
+                    <a class="news-link" href="https://news.web.nhk/newsweb/na/na-k10015189231000" target="_blank" rel="noopener noreferrer">
+                        記事原文を読む ➔
+                    </a>
+                </div>
+            </div>
+            
+            </div>
+        </section>
+        
+        </div>
+
+        <div class="footer">
+            Generated by Python RSS News Aggregator Script
+        </div>
+    </div>
+</body>
+</html>
