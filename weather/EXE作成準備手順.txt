@@ -1,0 +1,22 @@
+手順 1：必要なライブラリのインストール
+まず、プログラム本体で使っているライブラリ (geopy, requests) と、EXE化に必要な pyinstaller をインストールします。
+
+pip install geopy requests pyinstaller
+
+手順 2：スクリプトファイルの準備
+作成したPythonコードを一つのファイル（例：app.py または weather_app.py）として保存します。
+※ここでは w2.py というファイル名として説明します。
+
+手順 3：EXEファイルの作成（ビルド）
+コマンドプロンプトで、w2.py が保存されているフォルダ（ディレクトリー）に移動し、以下のコマンドを実行します。
+単一のEXEファイルにまとめたい場合（おすすめ）
+
+pyinstaller --onefile w2.py
+
+pyinstaller --onefile --version-file=version_info.txt w2.py
+
+コマンドオプションの補足：
+--onefile (-F): 関連するすべての依存ライブラリを1つの .exe ファイルにまとめます。配布や管理が非常に楽になります。
+--nowindowed / --console: 
+今回のアプリは input() や print() を使うコマンドライン（コンソール）アプリのため、
+黒い画面（コンソール）を出力・入力用に表示させる必要があります（デフォルトで有効です）。
