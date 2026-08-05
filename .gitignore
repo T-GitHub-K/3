@@ -17,5 +17,8 @@ dist/
 .vscode/
 .idea/
 
-
+.env
+*.env
+AI/.env
+AI/必要モジュールAPIキー.txt
 
