@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>AI回答確認レポート</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #f4f6f9; padding: 20px; color: #333; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .test-case { background: #fff; border-radius: 8px; margin-bottom: 25px; border: 1px solid #ddd; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .case-header { background: #2c3e50; color: #fff; padding: 10px 15px; font-weight: bold; }
+        .case-body { padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+        .section-box { border-left: 5px solid; padding: 12px 15px; border-radius: 4px; }
+        .section-title { font-size: 11px; font-weight: bold; padding: 2px 6px; border-radius: 3px; color: #fff; display: inline-block; margin-bottom: 6px; }
+        
+        .box-original { background: #f8f9fa; border-color: #6c757d; }
+        .box-original .section-title { background: #6c757d; }
+        
+        .box-instruction { background: #eef7ff; border-color: #007bff; }
+        .box-instruction .section-title { background: #007bff; }
+        
+        .box-response { background: #f0fff4; border-color: #28a745; }
+        .box-response .section-title { background: #28a745; }
+        
+        .content-text { white-space: pre-wrap; margin: 0; font-size: 14px; line-height: 1.6; word-break: break-word; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>AI実行・回答比較レポート</h2>
+        
+        <div class="test-case">
+            <div class="case-header">CASE 1</div>
+            <div class="case-body">
+                <div class="section-box box-original">
+                    <span class="section-title">元の文章 (ORIGINAL)</span>
+                    <pre class="content-text">1. 平成元年2月1日 基発第55号「ハイヤー・タクシー事業における累進歩合制度の廃止について」
+2. 平成14年1月27日 基発第0127003号
+について</pre>
+                </div>
+                <div class="section-box box-instruction">
+                    <span class="section-title">指示内容 (INSTRUCTION)</span>
+                    <pre class="content-text">以下の2つの通達について、指定したフォーマットに従って出力してください。
+
+【対象の通達】
+1. 平成元年2月1日 基発第55号「ハイヤー・タクシー事業における累進歩合制度の廃止について」
+2. 平成14年1月27日 基発第0127003号
+
+【制約事項】
+・要約だけでなく、必ず「該当箇所の抜粋」も含めてください。
+・勝手に情報を省略したり、途中で入力を打ち切ったりしないでください。
+・各通達ごとに以下の見出しフォーマットを必ず守って出力してください。
+
+---
+### [通達名・番号]
+
+#### 1. 概要・要約
+（ここに200文字程度で要約を記載）
+
+#### 2. 該当箇所の抜粋・主要なポイント
+（通達の核心となる本文や指導方針を箇条書きで抜粋）
+
+#### 3. 実務上の注意点・補足
+（この通達が意味することや注意点を1〜2行で記載）
+---</pre>
+                </div>
+                <div class="section-box box-response">
+                    <span class="section-title">AIの回答 (RESPONSE)</span>
+                    <pre class="content-text">---
+### 平成元年2月1日 基発第55号「ハイヤー・タクシー事業における累進歩合制度の廃止について」
+
+#### 1. 概要・要約
+平成元年2月1日 基発第55号「ハイヤー・タクシー事業における累進歩合制度の廃止について」は、ハイヤー・タクシー事業における累進歩合制度の廃止について規定しています。ハイヤー・タクシー事業の運営に関する制度の変更を扱っています。
+
+#### 2. 該当箇所の抜粋・主要なポイント
+* ハイヤー・タクシー事業における累進歩合制度の廃止
+* 事業の運営に関する基準の変更
+* 適用対象となる事業者の範囲
+
+#### 3. 実務上の注意点・補足
+この通達は、ハイヤー・タクシー事業の運営に関する制度の変更を規定しており、事業者には制度の変更に従った対応が求められます。
+
+---
+### 平成14年1月27日 基発第0127003号
+
+#### 1. 概要・要約
+平成14年1月27日 基発第0127003号は、具体的な内容については記載されていませんが、基発第0127003号は特定の事項に関する通達であると考えられます。
+
+#### 2. 該当箇所の抜粋・主要なポイント
+* 通達の具体的な内容については記載されていません
+* 基発第0127003号の詳細な内容は別途調査が必要です
+
+#### 3. 実務上の注意点・補足
+この通達の具体的な内容については記載されていないため、詳細な内容を把握するために別途調査が必要です。</pre>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</body>
+</html>
